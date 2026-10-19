@@ -1,0 +1,54 @@
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    background-color: #b94f80;
+    color: white;
+    padding: 15px 5%;
+    margin: 0;
+    position: sticky;
+    top: 0;
+
+}
+
+input {
+    padding: 12px;
+    width: 250px;
+}
+
+p {
+    padding: 15px 5%;
+    margin: 0;
+}
+
+/* Text #1 */
+p:nth-of-type(1) {
+    font-weight: bold;
+}
+
+/* Text #2 */
+p:nth-of-type(2) {
+    background-color: #eeeeee;
+}
+
+/* Form */
+form {
+    border: 1px solid gray;
+    margin: 2%;
+    padding: 3%;
+}
+
+button {
+    background-color: #b94f80;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+/* Text #3 */
+p:nth-of-type(3) {
+    font-size: 0.75rem;
+}
