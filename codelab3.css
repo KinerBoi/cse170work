@@ -11,34 +11,43 @@ h1 {
     margin: 0;
     position: sticky;
     top: 0;
+}
 
+h2 {
+    padding-left: 5%;
+}
+
+/* Text #1: bold and 5% left padding */
+.text1 {
+    font-weight: bold;
+    padding-left: 5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0;
+}
+
+/* Text #2: background and 5% left padding */
+.text2 {
+    background-color: #eeeeee;
+    width: auto;
+    padding-left: 5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0;
+}
+
+/* Form: explicit border properties */
+.message-form {
+    border-width: 1px;
+    border-color: gray;
+    border-style: solid;
+    margin: 2%;
+    padding: 3%;
 }
 
 input {
     padding: 12px;
     width: 250px;
-}
-
-p {
-    padding: 15px 5%;
-    margin: 0;
-}
-
-/* Text #1 */
-p:nth-of-type(1) {
-    font-weight: bold;
-}
-
-/* Text #2 */
-p:nth-of-type(2) {
-    background-color: #eeeeee;
-}
-
-/* Form */
-form {
-    border: 1px solid gray;
-    margin: 2%;
-    padding: 3%;
 }
 
 button {
@@ -48,7 +57,11 @@ button {
     cursor: pointer;
 }
 
-/* Text #3 */
-p:nth-of-type(3) {
+/* Text #3: smaller rem font and 5% left padding */
+.text3 {
     font-size: 0.75rem;
+    padding-left: 5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0;
 }
