@@ -1,23 +1,20 @@
-
 body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
 h1 {
+    margin: 0;
+    padding-left: 5%;
+    padding-top: 15px;
+    padding-bottom: 15px;
     background-color: #b94f80;
     color: white;
-    padding: 15px 5%;
-    margin: 0;
     position: sticky;
     top: 0;
 }
 
-h2 {
-    padding-left: 5%;
-}
-
-/* Text #1: bold and 5% left padding */
+/* Text #1: bold and indented by 5% */
 .text1 {
     font-weight: bold;
     padding-left: 5%;
@@ -26,21 +23,24 @@ h2 {
     margin: 0;
 }
 
-/* Text #2: background and 5% left padding */
+/* Text #2: full-width background and 5% left padding */
 .text2 {
     background-color: #eeeeee;
-    width: auto;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
     padding-left: 5%;
+    padding-right: 5%;
     padding-top: 15px;
     padding-bottom: 15px;
     margin: 0;
 }
 
-/* Form: explicit border properties */
+/* The form border has explicit width, style, and color. */
 .message-form {
     border-width: 1px;
-    border-color: gray;
     border-style: solid;
+    border-color: gray;
     margin: 2%;
     padding: 3%;
 }
@@ -48,6 +48,7 @@ h2 {
 input {
     padding: 12px;
     width: 250px;
+    max-width: 75%;
 }
 
 button {
