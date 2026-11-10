@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Instagram Feed - Coding Lab 7</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>Instagram Feed</h1>
+
+    <article class="post" aria-label="Photo gallery post">
+
+      <header class="post-header">
+        <span class="avatar" aria-hidden="true">●</span>
+        <strong>some_username</strong>
+      </header>
+
+      <div class="carousel" id="carousel">
+
+        <img
+          class="carousel-image"
+          id="0"
+          src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1000&q=85"
+          alt="Waterfall surrounded by green forest"
+        />
+
+        <button
+          class="nav prev"
+          type="button"
+          onclick="changeImage(-1)"
+          aria-label="Previous image">
+          &#10094;
+        </button>
+
+        <button
+          class="nav next"
+          type="button"
+          onclick="changeImage(1)"
+          aria-label="Next image">
+          &#10095;
+        </button>
+
+      </div>
+
+      <div class="actions">
+        <button
+          id="like-button"
+          type="button"
+          onclick="toggleLike()"
+          aria-label="Like post"
+          aria-pressed="false">
+          <span id="heart" aria-hidden="true">♡</span>
+        </button>
+
+        <span id="image-count" aria-live="polite">
+          1 / 5
+        </span>
+      </div>
+
+      <p class="caption">
+        <strong>some_username</strong>
+        Beautiful pictures from my gallery
+      </p>
+
+      <p class="timestamp">2 minutes ago</p>
+
+    </article>
+
+    <p class="hint">
+      Use the arrows, swipe left/right, or press your
+      keyboard arrow keys.
+    </p>
+  </main>
+</body>
+</html>
