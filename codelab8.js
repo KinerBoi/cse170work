@@ -10,7 +10,7 @@ const message = document.getElementById("message");
 let checkCounter = 0;
 let availableUsername = "";
 
-// Simulate a server checking username availability.
+// Simulate checking username availability.
 function fakeUsernameCheck(username) {
   return new Promise(function(resolve) {
     setTimeout(function() {
@@ -20,18 +20,19 @@ function fakeUsernameCheck(username) {
   });
 }
 
-// Make warning visible.
-function makeWarningVisible() {
+// Hide the remaining form.
+function hideNextSteps() {
+  nextSteps.classList.add("hidden");
+  availableUsername = "";
+}
+
+// FIX 1: Show checking warning.
+function showChecking() {
+  warning.textContent = "Checking username availability...";
+
   warning.classList.remove("hidden");
   warning.hidden = false;
   warning.style.display = "block";
-  warning.style.visibility = "visible";
-}
-
-// Task 2a: Show checking message.
-function showChecking() {
-  warning.textContent = "Checking username availability...";
-  makeWarningVisible();
 
   warning.classList.remove("error", "success");
   warning.classList.add("checking");
@@ -42,10 +43,29 @@ function showChecking() {
   hideNextSteps();
 }
 
-// Task 2c: Show empty username warning.
+// FIX 2: Show unavailable username warning.
+function showWarningUnavailable() {
+  warning.textContent = "This username is unavailable. Try again.";
+
+  warning.classList.remove("hidden");
+  warning.hidden = false;
+  warning.style.display = "block";
+
+  warning.classList.remove("checking", "success");
+  warning.classList.add("error");
+
+  inputBox.classList.add("input-error");
+
+  hideNextSteps();
+}
+
+// FIX 3: Show empty username warning.
 function showWarningEmpty() {
   warning.textContent = "You can use letters, numbers or symbols.";
-  makeWarningVisible();
+
+  warning.classList.remove("hidden");
+  warning.hidden = false;
+  warning.style.display = "block";
 
   warning.classList.remove("checking", "success");
   warning.classList.add("error");
@@ -56,21 +76,13 @@ function showWarningEmpty() {
   hideNextSteps();
 }
 
-// Hide the next steps.
-function hideNextSteps() {
-  nextSteps.classList.add("hidden");
-  nextSteps.style.display = "none";
-  availableUsername = "";
-}
-
-// Task 3: Show the next steps.
+// Show the rest of the form.
 function showNextSteps() {
   nextSteps.classList.remove("hidden");
-  nextSteps.style.display = "block";
 }
 
-// Bonus: Suggest alternative usernames.
-function showSuggestions(name) {
+// Bonus: Suggest alternate usernames.
+function showSuggestions(username) {
   suggestions.replaceChildren();
 
   const heading = document.createElement("p");
@@ -78,9 +90,9 @@ function showSuggestions(name) {
   suggestions.appendChild(heading);
 
   const options = [
-    name + "123",
-    name + "2026",
-    name + "_user"
+    username + "123",
+    username + "2026",
+    username + "_user"
   ];
 
   options.forEach(function(choice) {
@@ -101,58 +113,15 @@ function showSuggestions(name) {
   suggestions.classList.remove("hidden");
 }
 
-// Task 2b: Check whether username is unavailable.
-function showWarningUnavailable() {
-  const username = usernameInput.value.trim();
-  const requestId = checkCounter;
-
-  return fakeUsernameCheck(username).then(function(available) {
-
-    // Ignore outdated checks.
-    if (
-      requestId !== checkCounter ||
-      usernameInput.value.trim() !== username
-    ) {
-      return false;
-    }
-
-    if (!available) {
-      warning.textContent = "This username is unavailable. Try again.";
-      makeWarningVisible();
-
-      warning.classList.remove("checking", "success");
-      warning.classList.add("error");
-
-      inputBox.classList.add("input-error");
-
-      hideNextSteps();
-      showSuggestions(username);
-
-      return false;
-    }
-
-    warning.textContent = "Username is available!";
-    makeWarningVisible();
-
-    warning.classList.remove("checking", "error");
-    warning.classList.add("success");
-
-    inputBox.classList.remove("input-error");
-    suggestions.classList.add("hidden");
-
-    availableUsername = username;
-    return true;
-  });
-}
-
-// Task 1 and Task 3: Main username checking function.
+// FIX 4: Main checking function.
 function checkName() {
   checkCounter += 1;
-  message.textContent = "";
 
-  hideNextSteps();
-
+  const requestID = checkCounter;
   const username = usernameInput.value.trim();
+
+  message.textContent = "";
+  hideNextSteps();
 
   if (username.length === 0) {
     showWarningEmpty();
@@ -161,14 +130,37 @@ function checkName() {
 
   showChecking();
 
-  return showWarningUnavailable().then(function(available) {
-    if (available) {
+  return fakeUsernameCheck(username).then(function(available) {
+    // Ignore outdated username checks.
+    if (
+      requestID !== checkCounter ||
+      usernameInput.value.trim() !== username
+    ) {
+      return;
+    }
+
+    if (!available) {
+      showWarningUnavailable();
+      showSuggestions(username);
+    } else {
+      warning.textContent = "Username is available!";
+
+      warning.classList.remove(
+        "hidden", "checking", "error"
+      );
+      warning.classList.add("success");
+      warning.style.display = "block";
+
+      inputBox.classList.remove("input-error");
+      suggestions.classList.add("hidden");
+
+      availableUsername = username;
       showNextSteps();
     }
   });
 }
 
-// Check whenever the user types.
+// Event listener for typing.
 usernameInput.addEventListener("input", checkName);
 
 // Handle form submission.
@@ -184,7 +176,8 @@ form.addEventListener("submit", function(event) {
   }
 
   const password = document.getElementById("password").value;
-  const confirmation = document.getElementById("confirm-password").value;
+  const confirmation =
+    document.getElementById("confirm-password").value;
 
   if (!password || !confirmation) {
     message.textContent = "Please fill out both password fields.";
