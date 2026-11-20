@@ -1,184 +1,250 @@
 
-// CSE 170 Coding Lab 8: Advanced JavaScript
+// CSE 170 Coding Lab 8
+// Advanced JavaScript - Username Availability Checker
 
-// Simulated backend check. These usernames are already taken.
-const takenUsernames = new Set(['guest', 'admin', 'test']);
+// Get HTML elements
+const usernameInput = document.getElementById("username");
+const warning = document.getElementById("warning");
+const nextSteps = document.getElementById("next-steps");
+const inputBox = document.getElementById("input-box");
+const suggestions = document.getElementById("suggestions");
+const form = document.getElementById("signup-form");
+const message = document.getElementById("message");
 
-const usernameInput = document.querySelector('#username');
-const usernameField = document.querySelector('.username-field');
-const warning = document.querySelector('#warning');
-const nextSteps = document.querySelector('#next-steps');
-const suggestions = document.querySelector('#suggestions');
-const nextButton = document.querySelector('#next-button');
-const form = document.querySelector('#signup-form');
-const formMessage = document.querySelector('#form-message');
+// List of unavailable usernames
+const unavailableNames = ["guest", "admin", "test"];
 
-let checkNumber = 0;
+// Keep track of typing and availability
 let hasTyped = false;
-let availableUsername = null;
+let checkID = 0;
+let validUsername = "";
 
-// Simulates the latency of a server request.
+// Simulate a backend request
 function fakeUsernameCheck(username) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(!takenUsernames.has(username.toLowerCase()));
-    }, 650);
+  return new Promise(function(resolve) {
+    setTimeout(function() {
+      const isTaken = unavailableNames.includes(
+        username.toLowerCase()
+      );
+
+      resolve(!isTaken);
+    }, 500);
   });
 }
 
-// Update the warning message and color.
-function setWarning(message, type) {
-  warning.textContent = message;
-  warning.className = `warning ${type}`;
-
-  usernameField.classList.toggle(
-    'error',
-    type === 'error-text'
-  );
-}
-
-// Hide the next steps.
-function hideNextSteps() {
-  nextSteps.classList.add('hidden');
-  nextButton.disabled = true;
-  availableUsername = null;
-}
-
-// Display checking message.
+// TASK 2A
+// Show that the username is being checked
 function showChecking() {
-  setWarning(
-    'Checking username availability…',
-    'checking'
-  );
+  warning.textContent = "Checking username availability...";
 
-  hideNextSteps();
-  suggestions.classList.add('hidden');
+  // Make warning visible
+  warning.classList.remove("hidden");
+
+  // Set warning color to black
+  warning.classList.remove("error", "success");
+  warning.classList.add("checking");
+
+  // Remove red input border
+  inputBox.classList.remove("input-error");
+
+  // Hide next steps while checking
+  nextSteps.classList.add("hidden");
+
+  // Hide suggestions
+  suggestions.classList.add("hidden");
 }
 
-// Display warning when username is empty.
-function showWarningEmpty() {
-  setWarning(
-    'You can use letters, numbers or symbols.',
-    'error-text'
-  );
-
-  hideNextSteps();
-  suggestions.classList.add('hidden');
-}
-
-// Suggest alternative usernames.
-function showSuggestions(username) {
-  suggestions.replaceChildren();
-
-  const heading = document.createElement('span');
-  heading.textContent = 'Try one of these usernames: ';
-  suggestions.append(heading);
-
-  const options = [
-    `${username}123`,
-    `${username}2026`,
-    `${username}_user`
-  ];
-
-  for (const option of options) {
-    const button = document.createElement('button');
-
-    button.type = 'button';
-    button.textContent = option;
-
-    button.addEventListener('click', () => {
-      usernameInput.value = option;
-
-      usernameInput.dispatchEvent(
-        new Event('input', { bubbles: true })
-      );
-
-      usernameInput.focus();
-    });
-
-    suggestions.append(button);
+// TASK 2B
+// Show warning if username is unavailable
+async function showWarningUnavailable(username, requestID) {
+  if (username === undefined) {
+    username = usernameInput.value.trim();
   }
 
-  suggestions.classList.remove('hidden');
-}
+  if (requestID === undefined) {
+    requestID = checkID;
+  }
 
-// Check if username is unavailable.
-async function showWarningUnavailable(username, requestNumber) {
   const available = await fakeUsernameCheck(username);
 
-  // Ignore old checks if the user has typed something new.
-  if (
-    requestNumber !== checkNumber ||
-    usernameInput.value.trim() !== username
-  ) {
+  // Ignore outdated checks
+  if (requestID !== checkID) {
     return;
   }
 
   if (!available) {
-    setWarning(
-      'This username isn’t allowed. Try again.',
-      'error-text'
-    );
 
-    hideNextSteps();
+    // Update warning text
+    warning.textContent = "This username is unavailable. Try again.";
+
+    // Make warning visible
+    warning.classList.remove("hidden");
+
+    // Change warning color to red
+    warning.classList.remove("checking", "success");
+    warning.classList.add("error");
+
+    // Change input border to red
+    inputBox.classList.add("input-error");
+
+    // Hide next steps
+    nextSteps.classList.add("hidden");
+
+    validUsername = "";
+
+    // Display username suggestions
     showSuggestions(username);
+
   } else {
-    setWarning(
-      'Username is available!',
-      'success'
-    );
 
-    suggestions.classList.add('hidden');
+    // Username is available
+    warning.textContent = "Username is available!";
 
-    availableUsername = username;
-    nextSteps.classList.remove('hidden');
-    nextButton.disabled = false;
+    warning.classList.remove("hidden");
+    warning.classList.remove("checking", "error");
+    warning.classList.add("success");
+
+    // Remove red border
+    inputBox.classList.remove("input-error");
+
+    // Hide suggestions
+    suggestions.classList.add("hidden");
+
+    // Save available username
+    validUsername = username;
+
+    // Show next steps
+    nextSteps.classList.remove("hidden");
   }
 }
 
-// Check username whenever the input changes.
-usernameInput.addEventListener('input', () => {
-  hasTyped = true;
-  checkNumber += 1;
+// TASK 2C
+// Show warning when username is empty
+function showWarningEmpty() {
 
-  formMessage.textContent = '';
+  // Update warning text
+  warning.textContent = "You can use letters, numbers or symbols.";
+
+  // Make warning visible
+  warning.classList.remove("hidden");
+
+  // Change warning color to red
+  warning.classList.remove("checking", "success");
+  warning.classList.add("error");
+
+  // Add red border
+  inputBox.classList.add("input-error");
+
+  // Hide next steps
+  nextSteps.classList.add("hidden");
+
+  // Hide suggestions
+  suggestions.classList.add("hidden");
+
+  validUsername = "";
+}
+
+// BONUS 3
+// Suggest available usernames
+function showSuggestions(username) {
+
+  suggestions.innerHTML = "";
+
+  const heading = document.createElement("p");
+  heading.textContent = "Try one of these usernames:";
+
+  suggestions.appendChild(heading);
+
+  const possibleNames = [
+    username + "123",
+    username + "2026",
+    username + "_user"
+  ];
+
+  possibleNames.forEach(function(name) {
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = name;
+    button.classList.add("suggestion-button");
+
+    // Insert suggested username into input
+    button.addEventListener("click", function() {
+
+      usernameInput.value = name;
+
+      checkName();
+    });
+
+    suggestions.appendChild(button);
+  });
+
+  suggestions.classList.remove("hidden");
+}
+
+// TASK 1 AND TASK 3
+// Main function to check the username
+function checkName() {
+
+  hasTyped = true;
+  checkID++;
+
+  const currentID = checkID;
 
   const username = usernameInput.value.trim();
 
+  // Hide next steps whenever input changes
+  nextSteps.classList.add("hidden");
+
+  validUsername = "";
+
+  // If username is empty
   if (username.length === 0) {
+
     showWarningEmpty();
+
     return;
   }
 
+  // Immediately show checking message
   showChecking();
-  showWarningUnavailable(username, checkNumber);
-});
 
-// Handle form submission.
-form.addEventListener('submit', event => {
+  // Check username availability
+  return showWarningUnavailable(username, currentID);
+}
+
+// Run checkName whenever the user types
+usernameInput.addEventListener("input", checkName);
+
+// Handle form submission
+form.addEventListener("submit", function(event) {
+
   event.preventDefault();
 
   const username = usernameInput.value.trim();
 
-  if (
-    !hasTyped ||
-    !username ||
-    username !== availableUsername
-  ) {
+  if (username !== validUsername || !hasTyped) {
+    message.textContent = "Please choose an available username.";
     return;
   }
 
-  const password = document.querySelector('#password').value;
-  const confirmation = document.querySelector('#confirm-password').value;
+  const password = document.getElementById("password").value;
 
-  if (!password || !confirmation) {
-    formMessage.textContent =
-      'Please fill out both password fields.';
-  } else if (password !== confirmation) {
-    formMessage.textContent =
-      'Passwords do not match.';
+  const confirmPassword = document.getElementById(
+    "confirm-password"
+  ).value;
+
+  if (password.length === 0 || confirmPassword.length === 0) {
+
+    message.textContent = "Please fill out both password fields.";
+
+  } else if (password !== confirmPassword) {
+
+    message.textContent = "Passwords do not match.";
+
   } else {
-    formMessage.textContent =
-      `Success! Username ${username} is available. (Demo only; no account was created.)`;
+
+    message.textContent = "Success! Your username is available.";
   }
 });
