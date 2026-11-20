@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Lab 8 | Create a Username</title>
+  <link rel="stylesheet" href="codelab7.css">
+  <script src="codelab7.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <section class="signup-card" aria-labelledby="page-title">
+      <div class="intro">
+        <div class="logo" aria-hidden="true">G</div>
+        <h1 id="page-title">How you’ll sign in</h1>
+        <p>Create a username for your account</p>
+      </div>
+
+      <form id="signup-form" novalidate>
+        <label for="username">Username</label>
+
+        <div class="username-field">
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            aria-describedby="warning"
+            placeholder="Choose a username"
+          >
+          <span class="suffix">@gmail.com</span>
+        </div>
+
+        <p id="warning" class="warning hidden"
+           role="status" aria-live="polite"></p>
+
+        <div id="suggestions" class="suggestions hidden"></div>
+
+        <div id="next-steps" class="hidden">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Enter a password"
+            required
+          >
+
+          <label for="confirm-password">Confirm password</label>
+          <input
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Confirm your password"
+            required
+          >
+        </div>
+
+        <p id="form-message" class="form-message"
+           aria-live="polite"></p>
+
+        <button id="next-button" type="submit" disabled>
+          Next
+        </button>
+      </form>
+    </section>
+
+    <footer>
+      English (United States)
+      <span>Help &nbsp;&nbsp; Privacy &nbsp;&nbsp; Terms</span>
+    </footer>
+  </main>
+</body>
+</html>
